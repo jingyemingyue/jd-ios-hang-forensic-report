@@ -1,0 +1,159 @@
+说明：2026-10-27 18:27:31 抓取的系统诊断中，京东进程的线程采样（spindump）原文摘录。抓取时京东正卡在「我的 → 设置」，界面无响应。
+只摘录京东进程的进程信息、主线程、com.jdtn.elementQueue 线程三段，省略了 3 行内部编号，其余未改动。
+
+Date/Time:        2026-10-27 18:27:31.978 +0800
+End time:         2026-10-27 18:27:33.979 +0800
+OS Version:       iPhone OS 27.2 (Build 24B119)
+Duration:         2.00s
+Steps:            8 (250ms sampling interval)
+Hardware model:   iPhone17,1
+
+Process:          JD4iPhone [3082]
+Path:             /private/var/containers/Bundle/Application/266520CC-44F2-4342-8F19-1B6D37F5EC9D/JD4iPhone.app/JD4iPhone
+Identifier:       com.360buy.jdmobile
+Version:          171177 (16.1.80)
+Adam ID:          414245413
+Is First Party:   No
+Architecture:     arm64
+Parent:           launchd [1]
+RunningBoard Mgd: Yes
+UID:              501
+Memory Limit:     6144MB
+Jetsam Priority:  100
+Footprint:        392.14 MB
+Time Since Fork:  52s
+Num samples:      8 (1-8)
+CPU Time:         0.094s (168.3M cycles, 668.0M instructions, 0.25c/i, 1.79GHz avg)
+Num threads:      35
+Note:             4 idle work queue threads omitted
+
+  Thread 0x1f17a    DispatchQueue "com.apple.main-thread"(1)    8 samples (1-8)    priority 47 (base 47)    cpu time 0.040s (70.5M cycles, 346.9M instructions, 0.20c/i, 1.77GHz avg)    last ran 3.821s ago
+  8  ??? (dyld + 21796) [0x19c6e0524]
+    8  ??? (JD4iPhone + 609020) [0x1045f8afc]
+      8  ??? (UIKitCore + 764580) [0x1a0a64aa4]
+        8  ??? (GraphicsServices + 3876) [0x2490e8f24]
+          8  ??? (CoreFoundation + 243684) [0x19c88f7e4]
+            8  ??? (CoreFoundation + 238452) [0x19c88e374]
+              8  ??? (CoreFoundation + 242264) [0x19c88f258]
+                8  ??? (CoreFoundation + 367912) [0x19c8add28]
+                  8  ??? (CoreFoundation + 368052) [0x19c8addb4]
+                    8  ??? (UpdateCycle + 3060) [0x2d72e7bf4]
+                      8  ??? (UIKitCore + 434956) [0x1a0a1430c]
+                        8  ??? (UIKitCore + 435564) [0x1a0a1456c]
+                          8  ??? (UIKitCore + 407640) [0x1a0a0d858]
+                            8  ??? (UIKitCore + 410084) [0x1a0a0e1e4]
+                              8  ??? (QuartzCore + 114956) [0x1a054810c]
+                                8  ??? (QuartzCore + 117416) [0x1a0548aa8]
+                                  8  ??? (QuartzCore + 115628) [0x1a05483ac]
+                                    8  ??? (QuartzCore + 118412) [0x1a0548e8c]
+                                      8  ??? (QuartzCore + 135668) [0x1a054d1f4]
+                                        8  ??? (QuartzCore + 59460) [0x1a053a844]
+                                          8  ??? (QuartzCore + 60556) [0x1a053ac8c]
+                                            8  ??? (QuartzCore + 63088) [0x1a053b670]
+                                              8  ??? (UIKitCore + 38712) [0x1a09b3738]
+                                                8  ??? (UIKitCore + 44584) [0x1a09b4e28]
+                                                  8  ??? (UIKitCore + 46580) [0x1a09b55f4]
+                                                    8  ??? (UIKit + 649432) [0x1a62048d8]
+                                                      8  ??? (UIKitCore + 8129356) [0x1a116ab4c]
+                                                        8  ??? (UIKitCore + 2898724) [0x1a0c6db24]
+                                                          8  ??? (UIKitCore + 2644988) [0x1a0c2fbfc]
+                                                            8  ??? (UIKitCore + 2646104) [0x1a0c30058]
+                                                              8  ??? (UIKitCore + 2646380) [0x1a0c3016c]
+                                                                8  ??? (UIKitCore + 105060) [0x1a09c3a64]
+                                                                  8  ??? (UIKitCore + 123328) [0x1a09c81c0]
+                                                                    8  ??? (JD4iPhone + 77267344) [0x108f14190]
+                                                                      8  ??? (JD4iPhone + 77267828) [0x108f14374]
+                                                                        8  ??? (JD4iPhone + 77274060) [0x108f15bcc]
+                                                                          8  ??? (JD4iPhone + 76699028) [0x108e89594]
+                                                                            8  ??? (CoreFoundation + 20964) [0x19c8591e4]
+                                                                              8  ??? (CoreFoundation + 20684) [0x19c8590cc]
+                                                                                8  ??? (JD4iPhone + 76699432) [0x108e89728]
+                                                                                  8  ??? (JD4iPhone + 76700404) [0x108e89af4]
+                                                                                    8  ??? (JD4iPhone + 76468248) [0x108e51018]
+                                                                                      8  ??? (JD4iPhone + 77097956) [0x108eeabe4]
+                                                                                        8  ??? (JD4iPhone + 77099724) [0x108eeb2cc]
+                                                                                          8  ??? (JD4iPhone + 3480892) [0x1048b5d3c]
+                                                                                            8  ??? (JD4iPhone + 2648264) [0x1047ea8c8]
+                                                                                              8  ??? (JD4iPhone + 38015944) [0x1069a53c8]
+                                                                                                8  ??? (JD4iPhone + 2651952) [0x1047eb730]
+                                                                                                  8  ??? (libdispatch.dylib + 16116) [0x1cb1cbef4]
+                                                                                                    8  ??? (libsystem_kernel.dylib + 3176) [0x25879fc68]
+                                                                                                     *8  ??? (<4C2069A5-E22A-33C3-864A-57944A54B394> + 802180) [0xfffffff00ac53d84]
+
+  Thread 0x1f488    DispatchQueue "com.jdtn.elementQueue"(9990)    8 samples (1-8)    priority 37 (base 37)    last ran 19.026s ago
+  8  ??? (libsystem_pthread.dylib + 2320) [0x19c793910]
+    8  ??? (libsystem_pthread.dylib + 4664) [0x19c794238]
+      8  ??? (libdispatch.dylib + 87728) [0x1cb1dd6b0]
+        8  ??? (libdispatch.dylib + 89228) [0x1cb1ddc8c]
+          8  ??? (libdispatch.dylib + 46192) [0x1cb1d3470]
+            8  ??? (libdispatch.dylib + 43132) [0x1cb1d287c]
+              8  ??? (libdispatch.dylib + 114612) [0x1cb1e3fb4]
+                8  ??? (libdispatch.dylib + 7372) [0x1cb1c9ccc]
+                  8  ??? (JD4iPhone + 37747692) [0x106963bec]
+                    8  ??? (JD4iPhone + 2648060) [0x1047ea7fc]
+                      8  ??? (JD4iPhone + 2669060) [0x1047efa04]
+                        8  ??? (JD4iPhone + 2669160) [0x1047efa68]
+                          8  ??? (JD4iPhone + 2669364) [0x1047efb34]
+                            8  ??? (JD4iPhone + 14983936) [0x1053ae300]
+                              8  ??? (JD4iPhone + 2677924) [0x1047f1ca4]
+                                8  ??? (JD4iPhone + 2696276) [0x1047f6454]
+                                  8  ??? (JD4iPhone + 2706448) [0x1047f8c10]
+                                    8  ??? (JD4iPhone + 2706692) [0x1047f8d04]
+                                      8  ??? (JD4iPhone + 2709984) [0x1047f99e0]
+                                        8  ??? (JD4iPhone + 2709984) [0x1047f99e0]
+                                          8  ??? (JD4iPhone + 2710136) [0x1047f9a78]
+                                            8  ??? (JD4iPhone + 3584096) [0x1048cf060]
+                                              8  ??? (JD4iPhone + 2709668) [0x1047f98a4]
+                                                8  ??? (JD4iPhone + 3545424) [0x1048c5950]
+                                                  8  ??? (JD4iPhone + 2707580) [0x1047f907c]
+                                                    8  ??? (JD4iPhone + 2720484) [0x1047fc2e4]
+                                                      8  ??? (JD4iPhone + 3561920) [0x1048c99c0]
+                                                        8  ??? (JD4iPhone + 2685340) [0x1047f399c]
+                                                          8  ??? (JD4iPhone + 3541440) [0x1048c49c0]
+                                                            8  ??? (JD4iPhone + 2686812) [0x1047f3f5c]
+                                                              8  ??? (JD4iPhone + 3542436) [0x1048c4da4]
+                                                                8  ??? (JD4iPhone + 3530032) [0x1048c1d30]
+                                                                  8  ??? (JD4iPhone + 3491548) [0x1048b86dc]
+                                                                    8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                      8  ??? (JD4iPhone + 3515532) [0x1048be48c]
+                                                                        8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                          8  ??? (JD4iPhone + 3526804) [0x1048c1094]
+                                                                            8  ??? (JD4iPhone + 3529588) [0x1048c1b74]
+                                                                              8  ??? (JD4iPhone + 3530032) [0x1048c1d30]
+                                                                                8  ??? (JD4iPhone + 3491548) [0x1048b86dc]
+                                                                                  8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                    8  ??? (JD4iPhone + 3492616) [0x1048b8b08]
+                                                                                      8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                        8  ??? (JD4iPhone + 3498828) [0x1048ba34c]
+                                                                                          8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                            8  ??? (JD4iPhone + 3492616) [0x1048b8b08]
+                                                                                              8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                8  ??? (JD4iPhone + 3526804) [0x1048c1094]
+                                                                                                  8  ??? (JD4iPhone + 3529588) [0x1048c1b74]
+                                                                                                    8  ??? (JD4iPhone + 3530032) [0x1048c1d30]
+                                                                                                      8  ??? (JD4iPhone + 3491548) [0x1048b86dc]
+                                                                                                        8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                          8  ??? (JD4iPhone + 3492616) [0x1048b8b08]
+                                                                                                            8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                              8  ??? (JD4iPhone + 3498828) [0x1048ba34c]
+                                                                                                                8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                                  8  ??? (JD4iPhone + 3492616) [0x1048b8b08]
+                                                                                                                    8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                                      8  ??? (JD4iPhone + 3493468) [0x1048b8e5c]
+                                                                                                                        8  ??? (JD4iPhone + 3492440) [0x1048b8a58]
+                                                                                                                          8  ??? (JD4iPhone + 4566036) [0x1049bec14]
+                                                                                                                            8  ??? (JD4iPhone + 2685340) [0x1047f399c]
+                                                                                                                              8  ??? (JD4iPhone + 4567468) [0x1049bf1ac]
+                                                                                                                                8  ??? (JD4iPhone + 3341912) [0x104893e58]
+                                                                                                                                  8  ??? (JD4iPhone + 3342484) [0x104894094]
+                                                                                                                                    8  ??? (JD4iPhone + 3344736) [0x104894960]
+                                                                                                                                      8  ??? (JD4iPhone + 3348572) [0x10489585c]
+                                                                                                                                        8  ??? (JD4iPhone + 3383712) [0x10489e1a0]
+                                                                                                                                          8  ??? (JD4iPhone + 3387512) [0x10489f078]
+                                                                                                                                            8  ??? (JD4iPhone + 37919272) [0x10698da28]
+                                                                                                                                              8  ??? (JD4iPhone + 37291416) [0x1068f4598]
+                                                                                                                                                8  ??? (libdispatch.dylib + 73676) [0x1cb1d9fcc]
+                                                                                                                                                  8  ??? (libdispatch.dylib + 74976) [0x1cb1da4e0]
+                                                                                                                                                    8  ??? (libdispatch.dylib + 15044) [0x1cb1cbac4]
+                                                                                                                                                      8  ??? (libsystem_kernel.dylib + 28980) [0x2587a6134]
+                                                                                                                                                       *8  ??? (<4C2069A5-E22A-33C3-864A-57944A54B394> + 6216332) [0xfffffff00b17da8c] (blocked by turnstile waiting for JD4iPhone [3082] thread 0x1f17a)
