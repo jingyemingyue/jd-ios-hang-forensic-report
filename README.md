@@ -95,3 +95,48 @@
 3. **避免在冷启动 30 秒窗口内集中阻塞主线程**：
    - 将动态设置页模板的解析与安全校验后置为延迟空闲加载，或引入骨架屏（Skeleton View）做平滑过渡。
 
+
+---
+
+## 六、关键突破：纯净新机 vs 恢复备份环境的沙盒逐字节取证（为什么抹机新装完全不卡？）
+
+针对用户与测试反馈的铁证事实：**同一台 iPhone 16 Pro 在抹机清空（Erase All Content and Settings）后从 App Store 现装京东，卡顿率与人机验证码全部归零，设置页秒开；一旦还原旧备份，立即稳定复现设置页 5 秒假死与人机滑块**。
+
+我们对备份镜像（`orig_Manifest.db`）解密后进行了沙盒逐字节比对，找到了决定性的物理证据：
+
+### 1. 核心沙盒文件对比表
+
+| 目录 / 文件路径 | 纯净抹机新装状态 | 还原备份状态（受污染） | 包含文件数 | 现象关联与根因定性 |
+| :--- | :--- | :--- | ---: | :--- |
+| `Documents/TaroNativeDir/` | **完全不存在 (0 文件)** | **存在 (4,475 个文件)** | 4,475 | **【性能假死根因】** 存放 TaroNative 跨端引擎的多版本编译字节码。新机无缓存走 Native Fallback 毫秒开；还原备份触发 4,475 个历史文件的跨版本解析死锁。 |
+| `Documents/JDIconLabelCache/` | 不存在 (0 文件) | 存在 (4,937 个文件) | 4,937 | 图标/标签文件缓存，膨胀沙盒，引发启动阶段巨大磁盘遍历消耗。 |
+| `Documents/reactnative723/` | 不存在 (0 文件) | 存在 (1,851 个文件) | 1,851 | 历史遗留的 React Native 723 离线分片包。 |
+| `Documents/mmkv/mmkv.default` | 不存在 (0 字节) | 存在 (131,072 字节) | 11 | 高速缓存，固化了历史浏览埋点数据，每条埋点均硬编码绑定了旧设备 OpenUDID。 |
+| `Documents/JDBJMA/com_jd_jmadb.DB` | 不存在 (0 字节) | 存在 (12,288 字节) | 2 | 记录了登录界面的 56 组物理触摸坐标 (x,y) 和按键指纹，作为反欺诈行为指纹库。 |
+| `Library/Preferences/com.360buy.jdmobile.plist` | 初始配置 (<5 KB) | **存在 (222,943 字节)** | 1 | **【风控拦截标记】** 固化写入了 `riskHandle_sdToken`、`riskHandle_verifyToken`、`JDBRisk_client_risk_detect = [1793110854, 1793110865]`。 |
+| `Library/JDUserDefaults/com.360buy.jdmobile.plist` | 不存在 (0 字节) | **存在 (128,493 字节)** | 1 | **【设备持久化追踪】** 京东私有容器，持久化了采集 191 次的 `CreateUUID`、APNs Token 及推送绑定 PIN。 |
+| `AppDomainGroup-group.jdmobile` | 不存在 (0 字节) | **存在 (23,027 字节)** | 13 | **【跨进程指纹与会话】** 跨进程容器，固化写入了 `Widget_OpenUDID`、`Widget_cookieStr` (含 wskey) 与物理经纬度。 |
+
+### 2. 设置页 5 秒假死的完整闭环推演
+
+在受污染备份的 `Documents/TaroNativeDir/TNTemplate/taroNativeSpace/jdmine/` 下，设置页的三大核心楼层全部被注入了多套历史版本：
+- `jdmine_setting_head`: 并存 `15.6.0`, `15.12.0`, `15.14.0`
+- `jdmine_setting_menu`: 并存 `15.4.0`, `15.10.0`, `15.12.0`（MessagePack AST 字节码 `index.mpk`）
+- `jdmine_setting_tool`: 并存 `15.8.0`, `15.10.0`
+
+**对比机理**：
+1. **纯净新机**：沙盒 `Documents` 完全为空。`UserInfoSettingTnViewController` 探测本地缓存立即判定 Miss，**无缝退化到内置的 Native Fallback 渲染**，主线程耗时 < 30ms，完全不卡。
+2. **恢复备份机**：沙盒无差别还原了 4,475 个旧模板。进入设置页时，客户端检测到本地多版本存在，将解析与合并任务抛入 `com.jdtn.elementQueue`。然而主线程因调用了 `getTemplateWithSubSpace:tempId:version:complete:`，在主队列通过 `dispatch_semaphore_wait(..., 5.0s)` 进行了**同步死等**！后台排版线程在反序列化旧版 MessagePack 字节码时遇阻，主线程 5 秒超时耗尽，引发用户直观感知的持续冻结。
+
+### 3. 风控人机滑块频繁弹出的闭环推演
+
+1. **纯净新机**：IDFV 重新生成，Keychain 为空，`riskHandle_sdToken` 为空，服务端风控模型无法关联到历史的“异常标记会话”，判定为正常新会话，放行无阻。
+2. **恢复备份机**：iOS 备份还原将 `Library/Preferences` 与 `JDUserDefaults` 中的 `riskHandle_sdToken`、`Widget_OpenUDID`、打点 191 次的 `CreateUUID`、以及 Keychain 中的 `jdpolluxca` (CAID) 完整恢复。京东启动时，JMA 安全 SDK 收集这些固化的设备指纹并上报风控网关，服务端即时命中风控库中的黑名单/高风险标记，触发防御策略，强制下发人机滑块与服务降级。
+
+### 4. 给京东客户端工程团队的针对性建议
+
+1. **增加缓存有效性与多版本自动清理（GC）**：
+   - 动态模板目录 `Documents/TaroNativeDir` 应在应用版本升级（如 16.1.80）时自动清理所有低版本（如 15.x）残留；
+   - 严禁将巨量离线解包文件直接存放在会被 iOS iTunes 备份还原的 `Documents/` 根目录下，建议移至 `Library/Caches`（iOS 系统会自动免于备份，且支持系统低空间自动清理）。
+2. **消除主线程同步信号量**：
+   - 即使模板本地命中，也绝不能在主线程使用 `dispatch_semaphore_wait` 同步等待后台反序列化。必须全异步加载或先渲染骨架屏。
